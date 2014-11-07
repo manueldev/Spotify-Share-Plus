@@ -1,0 +1,1 @@
+This app allows you to share songs from Spotify app for android including title and artist.

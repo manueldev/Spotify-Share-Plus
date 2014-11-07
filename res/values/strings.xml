@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Add ArtistTitle for Spotify Share</string>
+    <string name="title_activity_main">Add ArtistTitle for Spotify</string>
+    <string name="error_notrackid">Track ID not found. Start this app from Spotify Share option.</string>
+    <string name="error_nosonginfo">Song info not found. Start this app from Spotify Share song option.</string>
+    
+</resources>
