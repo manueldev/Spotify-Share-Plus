@@ -12,7 +12,7 @@ https://github.com/manueldev/AddArtistTitleForSpotifyShare/releases/latest
 
 Sharing a song from Spotify to Twitter on Android.
 
-Spotify original boring way :unamused: | AddArtistTitleForSpotifyShare fun way :grinning:
+AddArtistTitleForSpotifyShare fun way :grinning: | Spotify original boring way :unamused:
 -------------------------------------- | -----------------------------------------------------
 ![Step 1](http://i.imgur.com/OU8litUl.png) | ![Step 1](http://i.imgur.com/OU8litUl.png)
 ![Step 2](http://i.imgur.com/qtNaZXTl.png) | ![Step 2](http://i.imgur.com/VkrOZiRl.png)
