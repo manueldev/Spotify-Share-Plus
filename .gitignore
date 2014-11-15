@@ -39,3 +39,6 @@ proguard/
 
 # jks
 *.jks
+
+# Config values
+res/values/config.xml
