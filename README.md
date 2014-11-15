@@ -2,7 +2,7 @@
 
 ## What does it do?
 
-This app allows you to share songs from Spotify app for android including title and artist.
+This app allows you to share songs, albums, starred list and artists from Spotify (Android) app including title and artist in the message.
 
 ## Download
 
