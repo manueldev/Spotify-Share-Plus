@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Add ArtistTitle for Spotify Share</string>
-    <string name="title_activity_main">Add ArtistTitle for Spotify</string>
-    <string name="error_notrackid">Track ID not found. Start this app from Spotify Share option.</string>
-    <string name="error_nosonginfo">Song info not found. Start this app from Spotify Share song option.</string>
+    <string name="app_name">Spotify Share Plus</string>
+    <string name="title_activity_main">Share with Spotify Share Plus</string>
+    <string name="error_noiteminfo">There was a problem getting %1$s information. Check your network connection.</string>
+    <string name="error_noinet">Share songs is not available when offline. Connect to a Wi-Fi or cellular data network.</string>
+    <string name="error_whenShFromWrongPlace">You must share from a song, artist, starred list or album using Spotify app.</string>
+    <string name="error_parse">There was a problem with Spotify API.</string>
+    <string name="retry">Try again</string>
+    
+    <string-array name="itemTypes">
+        <item>track</item>
+        <item>artist</item>
+        <item>album</item>
+        <item>starred list</item>
+    </string-array>
     
 </resources>

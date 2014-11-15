@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Spotify Share Plus</string>
+    <string name="title_activity_main">Usando Spotify Share Plus</string>
+    <string name="error_noiteminfo">Un problema ocurrió al recuperar informacion (%1$s). Revisa tu conexion Wi-Fi o de datos moviles.</string>
+    <string name="error_noinet">No puedes compartir al estar sin internet. Revisa tu conexion Wi-Fi o de datos moviles.</string>
+    <string name="error_whenShFromWrongPlace">Debes usar la aplicacion de Spotify para compartir canciones, álbumes, artistas o tu lista de canciones seleccionadas.</string>
+    <string name="error_parse">Ocurrió un problema con la API de Spotify.</string>
+    <string name="retry">Reintentar</string>
+    
+    <string-array name="itemTypes">
+        <item>canción</item>
+        <item>artista</item>
+        <item>álbum</item>
+        <item>seleccionados</item>
+    </string-array>
+    
+</resources>
