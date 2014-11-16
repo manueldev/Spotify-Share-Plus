@@ -7,6 +7,9 @@ import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -72,10 +75,23 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 			showNotification(true, "Error", context.getString(R.string.error_parse));
 		}else{
 			enviarCancion(mensaje);
+			sendTypeAnalytics();
 		}
 		return null;
 	}
 	
+	private void sendTypeAnalytics() {
+		// Get tracker.
+		Tracker t = GoogleAnalytics.getInstance(context).newTracker(R.xml.global_tracker);
+		t.enableAdvertisingIdCollection(true);
+		// Build and send an Event.
+		t.send(new HitBuilders.EventBuilder()
+		    .setCategory("Normal")
+		    .setAction("Publicando")
+		    .setLabel(tipoSh[tipoSelected])
+		    .build());
+	}
+
 	private boolean creatingMessage() {
 		try {
 			JSONObject jsonParsed = new JSONObject(jsonr);

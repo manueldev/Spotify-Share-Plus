@@ -1,5 +1,8 @@
 package com.malejandrodev.addartisttitleforspotifyshare;
 
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -17,6 +20,9 @@ public class MainActivity extends Activity {
 		NotificationManager notifManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		notifManager.cancelAll();
 		
+        GoogleAnalytics.getInstance(this).newTracker(R.xml.global_tracker).enableAdvertisingIdCollection(true);
+        
+        
 		String url = getLinkFromIntent();
 		if(url == null){
 			url = "nourl";

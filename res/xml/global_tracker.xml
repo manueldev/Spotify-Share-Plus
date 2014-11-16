@@ -3,12 +3,17 @@
 tools:ignore="TypographyDashes">
     
 	<integer name="ga_sessionTimeout">300</integer>
-	<bool name="ga_autoActivityTracking">true</bool>
 	
+	<!-- catch and report uncaught exceptions from the app -->	
+	<bool name="ga_reportUncaughtExceptions">true</bool>
+	 
+	<!-- Enable automatic Activity measurement -->
+	<bool name="ga_autoActivityTracking">true</bool>	
+	 <!-- The screen names that will appear in reports -->
 	<screenName name="com.malejandrodev.addartisttitleforspotifyshare.MainActivity">
 	    Principal Activity
 	</screenName>  
 	<!--  The following value should be replaced with correct property id. -->
-	<string name="ga_trackingId">@config/ga_trackingId</string>
+	<string name="ga_trackingId">@string/secret_googleAnalyticsKey</string>
 
 </resources>
