@@ -1,4 +1,4 @@
-# AddArtistTitleForSpotifyShare Android App
+# Spotify Share Plus Android App
 
 ## What does it do?
 
@@ -6,13 +6,13 @@ This app allows you to share songs, albums, starred list and artists from Spotif
 
 ## Download
 
-https://github.com/manueldev/AddArtistTitleForSpotifyShare/releases/latest
+https://github.com/manueldev/Spotify-Share-Plus/releases/latest
 
 ## Usage
 
-Sharing a song from Spotify to Twitter on Android.
+Sharing a song (track, artist, starred list or album) from Spotify to Twitter on Android.
 
-AddArtistTitleForSpotifyShare fun way :grinning: | Spotify original boring way :unamused:
+Spotify Share Plus nice way :grinning: | Spotify original boring way :unamused:
 -------------------------------------- | -----------------------------------------------------
 ![Step 1](http://i.imgur.com/OU8litUl.png) | ![Step 1](http://i.imgur.com/OU8litUl.png)
 ![Step 2](http://i.imgur.com/qtNaZXTl.png) | ![Step 2](http://i.imgur.com/VkrOZiRl.png)
