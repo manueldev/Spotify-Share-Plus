@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
 		
 		//Remove Notificacions
 		NotificationManager notifManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-		notifManager.cancelAll();
+		notifManager.cancel(0303456);
 		
         GoogleAnalytics.getInstance(this).newTracker(R.xml.global_tracker).enableAdvertisingIdCollection(true);
         
@@ -28,16 +28,16 @@ public class MainActivity extends Activity {
 			url = "nourl";
 		}		
 		new PublishItem(getApplicationContext()).execute(url);
+		
+		//Updatecheck
+        new UpdateCheck(getApplicationContext()).execute();
+        
 		this.finish();
 	}
-	
+
 	private String getLinkFromIntent() {
 		Intent receivedIntent = getIntent();
 		String receivedAction = receivedIntent.getAction();
-		
-
-		
-		
 		if(receivedAction.equals(Intent.ACTION_SEND)){
 			String rv = receivedIntent.getStringExtra(Intent.EXTRA_TEXT);
 			if (rv.startsWith("http://open.spotify.com/")) {
