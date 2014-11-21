@@ -8,6 +8,7 @@
     <string name="error_whenShFromWrongPlace">You must share from a song, artist, starred list or album using Spotify app.</string>
     <string name="error_parse">There was a problem with Spotify API.</string>
     <string name="retry">Try again</string>
+    <string name="downloadingUpdate">Downloading update</string>
     
     <string-array name="itemTypes">
         <item>track</item>

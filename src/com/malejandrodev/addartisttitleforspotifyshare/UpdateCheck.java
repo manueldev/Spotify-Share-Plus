@@ -1,13 +1,11 @@
 package com.malejandrodev.addartisttitleforspotifyshare;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 
@@ -15,7 +13,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +28,11 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 	Context context;
 	Date lastCheck, now;
 	String lastVersion, localVersion, newApkUrl;
-	int size, mId = 5555;
+	int mId = 5555;
+	long size;
+	
+	NotificationCompat.Builder mBuilder;
+	NotificationManagerCompat mNotificationManager;
 	
 	@SuppressWarnings("unused")
 	@Override
@@ -42,12 +43,11 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 		lastCheck = new Date(getLastCheck());
 		long td = now.getTime() - lastCheck.getTime();
 		float diffHours = (td) / (60 * 60 * 1000);
-		//si la diferencia entre ahora y el ultimo check es menor a 12 horas, se cancela la tarea
-		if (diffHours < 12 && !(BuildConfig.DEBUG)) {
+		//si la diferencia entre ahora y el ultimo check es menor a x horas, se cancela la tarea
+		if (diffHours < 6 && !(BuildConfig.DEBUG)) {
 			cancel(true);
 		}
 	}
-
 	@Override
 	protected String doInBackground(Void... arg0) {
 		localVersion = getLocalVersion();
@@ -56,47 +56,91 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putString(context.getResources().getString(R.string.saved_lastCheck), String.valueOf(now.getTime()));
 		editor.commit();
+		
 		if (!localVersion.equals(lastVersion)) {
-		    String filename = context.getString(R.string.app_name) + lastVersion + ".apk";
-		    try {
-		        URL url = new URL(newApkUrl);
-		        URLConnection connection = url.openConnection();
-		        connection.connect();
+			showNotification(false, true, 0, context.getResources().getString(R.string.downloadingUpdate));
+			
+			String filename = context.getString(R.string.app_name) + lastVersion + ".apk";
+			
+			try {
+				final OkHttpClient client;
 
-		        int fileLength = size;
-		        // download the file
-		        InputStream input = new BufferedInputStream(url.openStream());
-		        OutputStream output = context.openFileOutput(filename, Context.MODE_PRIVATE);
-
-		        byte data[] = new byte[1024];
-		        long total = 0;
-		        int count;
-		        while ((count = input.read(data)) != -1) {
-		            total += count;
-		            publishProgress((int) (total * 100 / fileLength));
-		            output.write(data, 0, count);
-		        }
-
-		        output.flush();
-		        output.close();
-		        input.close();
-		    } catch (Exception e) {
-		        Log.e("YourApp", "Well that didn't work out so well...");
-		        Log.e("YourApp", e.getMessage());
-		    }
-		    return context.getFilesDir().getAbsolutePath() + "/" + filename;
+			    client = new OkHttpClient();
+			    client.setConnectTimeout(10, TimeUnit.SECONDS);
+			    client.setWriteTimeout(10, TimeUnit.SECONDS);
+			    client.setReadTimeout(15, TimeUnit.SECONDS);
+			    Request request = new Request.Builder()
+			        .url(newApkUrl)
+			        .build();	
+			    Response response = client.newCall(request).execute();
+			   
+			    if (response.isSuccessful()) {
+	                InputStream inputStream = null;
+	                OutputStream output = null;
+	                try {
+	                    inputStream = response.body().byteStream();
+	                    byte[] buff = new byte[1024 * 4];
+	                    long downloaded = 0;
+	                    long target = size;
+	                    if((target = response.body().contentLength()) != -1);
+	                    int readed, latestPercentDone, percentDone = -1;
+	                    output = context.openFileOutput(filename, Context.MODE_PRIVATE);
+	                    
+	                    
+	    		        while ((readed = inputStream.read(buff)) != -1) {
+	    		        	downloaded += readed;
+	    		            latestPercentDone  = (int)((downloaded * 100) / target);
+	    		            if (percentDone != latestPercentDone) {
+	    		                percentDone = latestPercentDone;
+	    		                publishProgress(percentDone);
+	    		            }
+	    		            output.write(buff, 0, readed);
+	    		            
+	    		            if (isCancelled()) {
+	                            return "Descarga cancelada por cancel();";
+	                        }
+	    		        }
+	    		        //return file address
+	    		        return context.getFilesDir().getAbsolutePath() + "/" + filename;
+	                } catch (IOException ignore) {
+	                	Log.e(context.getString(R.string.app_name), "Error " + ignore.getMessage());
+	                    return "Error" + ignore.getMessage();
+	                } finally {
+	                    if (inputStream != null) {
+	                        inputStream.close();
+	                    }
+	                    if (output != null) {
+	                    	output.flush();
+	                    	output.close();
+						}
+	                }
+	            } else {
+	                //Servidor no responde con HTTP-200.
+	            	Log.e(context.getString(R.string.app_name), "Descargando update, HTTP: " + response.code());
+	            }
+			    
+			} catch (Exception e) {
+				Log.e(context.getString(R.string.app_name), e.getMessage());
+			}
+		}else{
+			cancel(true);
 		}
 		return null;
 	}
 	private void publishProgress(int i) {
-		// TODO Auto-generated method stub
-		showNotification(false, true, i, "Descargando nueva version");
+		try {
+			mBuilder.setProgress(100, i, false);
+			mNotificationManager.notify(mId, mBuilder.build());
+		} catch (Exception e) {
+			Log.e(context.getString(R.string.app_name), e.getMessage());
+		}
+		
 	}
 	
 	private void showNotification(boolean isError, boolean isProgressbar, int progress, String... info){
-		//info: 0 title, 1 description,
+		//info: 0 title, 1 description
 		String tickerText;
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+		mBuilder = new NotificationCompat.Builder(context);
 		mBuilder
         .setSmallIcon(R.drawable.ic_stat_notify_default)
         .setContentTitle(info[0]);
@@ -110,21 +154,10 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 		}
 		if(isProgressbar){
 			mBuilder.setOngoing(true); 
-			mBuilder.setProgress(size, progress, false);
 		}
-//		if (isError){
-//			Intent intent = new Intent(context, MainActivity.class);
-//			intent.putExtra(Intent.EXTRA_TEXT, link);
-//			//ARRG
-//			intent.putExtra("retryMode", true);
-//			intent.setAction(Intent.ACTION_SEND);
-//			intent.setType("text/plain");
-//			PendingIntent resendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-//			mBuilder.addAction(R.drawable.ic_action_refresh, context.getString(R.string.retry), resendIntent);
-//		}
 		
 		mBuilder.setTicker(tickerText);
-		NotificationManagerCompat mNotificationManager =
+		mNotificationManager =
 				NotificationManagerCompat.from(context);
 		mNotificationManager.notify(null, mId, mBuilder.build());
 	}
@@ -133,8 +166,7 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 	@Override
 	protected void onPostExecute(String path) {
 		//Remove Notificacions
-  		NotificationManager notifManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-  		notifManager.cancel(mId);
+  		mNotificationManager.cancel(mId);
   		Intent i = new Intent();
 	    i.setAction(Intent.ACTION_VIEW);
 	    File f = new File(path);
@@ -151,7 +183,7 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 	
 	private String getLocalVersion() {
 		try {
-			return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+			return "v" + context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
