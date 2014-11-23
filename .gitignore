@@ -41,4 +41,4 @@ proguard/
 *.jks
 
 # Config values
-res/values/config.xml
+res/xml/global_tracker.xml

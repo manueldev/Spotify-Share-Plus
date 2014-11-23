@@ -3,6 +3,7 @@ package com.malejandrodev.addartisttitleforspotifyshare;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,8 +70,7 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 		}else if(!parseLink() || link.equals("nourl")){
 			showNotification(false, "Error", context.getString(R.string.error_whenShFromWrongPlace));
 		}else if(!getitemInfo()){
-			String tipoShFromStrings[] = context.getResources().getStringArray(R.array.itemTypes);
-			showNotification(true, "Error", String.format(context.getString(R.string.error_noiteminfo), tipoShFromStrings[tipoSelected]));
+			showNotification(true, "Error", String.format(context.getString(R.string.error_noinet)));
 		}else if(!creatingMessage()){
 			showNotification(true, "Error", context.getString(R.string.error_parse));
 		}else{
@@ -83,7 +83,7 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 	private void sendTypeAnalytics() {
 		// Get tracker.
 		Tracker t = GoogleAnalytics.getInstance(context).newTracker(R.xml.global_tracker);
-		t.enableAdvertisingIdCollection(true);
+		t.enableAutoActivityTracking(true);
 		// Build and send an Event.
 		t.send(new HitBuilders.EventBuilder()
 		    .setCategory("Normal")
@@ -192,12 +192,19 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 
 	private void loadData(String url) throws Exception {
 		OkHttpClient client = new OkHttpClient();
+		
+		client.setConnectTimeout(5, TimeUnit.SECONDS);
+	    
 		Request request = new Request.Builder()
         .url(url)
         .build();
+		
 
 	    Response response = client.newCall(request).execute();
-	    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+	    if (!response.isSuccessful()){ 
+	    	client.cancel(request);
+	    	throw new IOException("Unexpected code " + response);
+	    }
 	    jsonr = response.body().string();
 	}
 	

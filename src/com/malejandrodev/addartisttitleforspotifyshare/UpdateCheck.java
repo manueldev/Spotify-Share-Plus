@@ -52,6 +52,10 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 	protected String doInBackground(Void... arg0) {
 		localVersion = getLocalVersion();
 		lastVersion = getLastVersion();
+		if (lastVersion == "0") {
+			cancel(true);
+			return null;
+		}
 		SharedPreferences sharedPref = context.getSharedPreferences(context.getResources().getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.putString(context.getResources().getString(R.string.saved_lastCheck), String.valueOf(now.getTime()));
