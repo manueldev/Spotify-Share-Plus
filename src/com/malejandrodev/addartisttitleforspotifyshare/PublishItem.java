@@ -62,15 +62,14 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 		context = contextin;
 	}
 	
-	@Override
 	protected Void doInBackground(String... arg0) {
 		link = arg0[0];
 		if(!isNetworkAvailable()){
 			showNotification(true, "Error", context.getString(R.string.error_noinet));
-		}else if(!parseLink() || link.equals("nourl")){
+		}else if(!parseLink() || link.equals("no_url")){
 			showNotification(false, "Error", context.getString(R.string.error_whenShFromWrongPlace));
 		}else if(!getitemInfo()){
-			showNotification(true, "Error", String.format(context.getString(R.string.error_noinet)));
+			showNotification(true, "Error", context.getString(R.string.error_parse));
 		}else if(!creatingMessage()){
 			showNotification(true, "Error", context.getString(R.string.error_parse));
 		}else{
@@ -186,7 +185,6 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 		sendIntent.setAction(Intent.ACTION_SEND);
 		sendIntent.putExtra(Intent.EXTRA_TEXT, txPublicar);
 		sendIntent.setType("text/plain");
-		sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(sendIntent);
 	}
 
@@ -225,6 +223,5 @@ public class PublishItem extends AsyncTask<String, Void, Void>{
 			return false;
 		}
 
-	}
-	
+	}	
 }

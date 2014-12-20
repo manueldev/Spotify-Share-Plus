@@ -62,6 +62,7 @@ public class UpdateCheck extends AsyncTask<Void, Void, String>{
 		editor.commit();
 		
 		if (!localVersion.equals(lastVersion)) {
+			Log.e(context.getString(R.string.app_name), "Update available");
 			showNotification(false, true, 0, context.getResources().getString(R.string.downloadingUpdate));
 			
 			String filename = context.getString(R.string.app_name) + lastVersion + ".apk";

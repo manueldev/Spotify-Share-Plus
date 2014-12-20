@@ -34,10 +34,7 @@ public class MainActivity extends Activity {
 		mGATracker.enableAutoActivityTracking(true);
 		 
         
-		String url = getLinkFromIntent();
-		if(url == null){
-			url = "nourl";
-		}		
+		String[] url = getLinkAndDescriptionFromIntent();		
 		new PublishItem(getApplicationContext()).execute(url);
 		
 		//Updatecheck
@@ -56,21 +53,19 @@ public class MainActivity extends Activity {
 		analytics.reportActivityStop(this);
 	}
 
-	private String getLinkFromIntent() {
+	private String[] getLinkAndDescriptionFromIntent() {
 		Intent receivedIntent = getIntent();
 		String receivedAction = receivedIntent.getAction();
+		String rv[] = {"no_url","no_subject"};
 		if(receivedAction.equals(Intent.ACTION_SEND)){
-			String rv = receivedIntent.getStringExtra(Intent.EXTRA_TEXT);
-			if (rv.startsWith("http://open.spotify.com/")) {
-				return rv;
-			} else {
-				return null;
+			rv[0] = receivedIntent.getStringExtra(Intent.EXTRA_TEXT);
+			if (rv[0].startsWith("http://open.spotify.com/")) {
+				rv[1] = (receivedIntent.getStringExtra(Intent.EXTRA_SUBJECT));
 			}
 		}else if (BuildConfig.DEBUG){
-			return "http://open.spotify.com/user/0qgiFuYhYuwtFXEwYakddE/starred";
+			rv[0] = "http://open.spotify.com/user/0qgiFuYhYuwtFXEwYakddE/starred";
+			rv[1] = receivedIntent.getStringExtra(Intent.EXTRA_SUBJECT);
 		}
-		else{
-			return null;
-		}	
+		return rv;
 	}		
 }
